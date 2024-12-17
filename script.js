@@ -262,6 +262,15 @@ function handleApiKeyInput(event) {
     // Enable/disable save button based on input
     const saveButton = document.getElementById('saveApiKey');
     saveButton.disabled = !input.value;
+    
+    // Handle mobile keyboard "done" button
+    if (event.inputType === 'insertLineBreak' || 
+        (event.key === 'Enter' && !event.shiftKey)) {
+        event.preventDefault();
+        if (input.value) {
+            saveCredentials();
+        }
+    }
 }
 
 // Initialize
@@ -284,12 +293,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add API key input event listeners
     const apiKeyInput = document.getElementById('apiKey');
     apiKeyInput.addEventListener('input', handleApiKeyInput);
-    apiKeyInput.addEventListener('paste', (e) => {
-        // Handle paste event
-        e.preventDefault();
-        const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-        apiKeyInput.value = pastedText.trim().replace(/\s+/g, '');
-        handleApiKeyInput({ target: apiKeyInput });
+    apiKeyInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (apiKeyInput.value.trim()) {
+                saveCredentials();
+            }
+        }
+    });
+    
+    // Handle mobile keyboard events
+    apiKeyInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (apiKeyInput.value.trim()) {
+                saveCredentials();
+            }
+        }
     });
 
     // Add form submission handling

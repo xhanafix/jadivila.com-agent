@@ -313,6 +313,10 @@ button:disabled {
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
+    position: sticky;
+    bottom: 0;
+    background: var(--secondary-color);
+    padding-top: 10px;
 }
 
 .primary-button {
@@ -391,4 +395,33 @@ button:disabled {
     color: var(--text-color);
     opacity: 0.7;
     cursor: not-allowed;
+}
+
+/* Update mobile styles */
+@media (max-width: 768px) {
+    .api-input-group {
+        margin-bottom: 15px;
+    }
+
+    .api-input-group input {
+        height: 44px; /* Larger touch target */
+    }
+
+    .button-group {
+        flex-direction: column;
+        padding: 10px 0;
+        margin: 0;
+        gap: 8px;
+    }
+
+    .button-group button {
+        width: 100%;
+        min-height: 44px; /* Minimum touch target size */
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+
+    /* Ensure the setup section has enough padding for the fixed buttons */
+    .setup-section {
+        padding-bottom: calc(2rem + 100px);
+    }
 }

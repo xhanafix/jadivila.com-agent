@@ -18,7 +18,7 @@
 
         <div class="setup-section" id="apiSetup">
             <h2>Setup Your AI Agent</h2>
-            <form onsubmit="event.preventDefault(); saveCredentials();">
+            <form onsubmit="event.preventDefault(); saveCredentials();" autocomplete="off">
                 <div class="api-input-group">
                     <input type="password" 
                            id="apiKey" 
@@ -26,12 +26,21 @@
                            autocomplete="off"
                            autocapitalize="off"
                            spellcheck="false"
-                           autocorrect="off">
-                    <button type="button" id="showApiKey" class="icon-button">👁️</button>
+                           autocorrect="off"
+                           enterkeyhint="done">
+                    <button type="button" 
+                            id="showApiKey" 
+                            class="icon-button" 
+                            aria-label="Toggle API key visibility">👁️</button>
                 </div>
                 <div class="button-group">
-                    <button type="submit" id="saveApiKey" class="primary-button" disabled>Save API Key</button>
-                    <button type="button" onclick="usePresetCredentials()" class="secondary-button">Use JadiVila.com Credentials</button>
+                    <button type="submit" 
+                            id="saveApiKey" 
+                            class="primary-button" 
+                            disabled>Save API Key</button>
+                    <button type="button" 
+                            onclick="usePresetCredentials()" 
+                            class="secondary-button">Use JadiVila.com Credentials</button>
                 </div>
                 <div id="apiStatus" class="api-status"></div>
             </form>
