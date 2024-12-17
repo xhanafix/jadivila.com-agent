@@ -13,6 +13,7 @@ body {
     max-width: 1000px;
     margin: 20px auto;
     padding: 20px;
+    margin-bottom: 80px;
 }
 
 .setup-container {
@@ -181,4 +182,33 @@ button:hover {
 .language-buttons button {
     padding: 15px 30px;
     font-size: 1.1em;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+.footer p {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.heart {
+    color: #ff4d4d;
+    display: inline-block;
+    animation: heartbeat 1.5s ease infinite;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
