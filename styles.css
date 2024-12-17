@@ -288,6 +288,10 @@ button:disabled {
 .api-input-group input {
     margin-bottom: 0;
     padding-right: 40px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-size: 16px;
 }
 
 .icon-button {
@@ -343,4 +347,48 @@ button:disabled {
     background: rgba(244, 67, 54, 0.1);
     color: #F44336;
     border: 1px solid #F44336;
+}
+
+/* Update API input styles */
+.api-input-group input {
+    margin-bottom: 0;
+    padding-right: 40px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-size: 16px;
+}
+
+/* Add these new styles */
+.api-input-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* Improve button touch targets on mobile */
+@media (max-width: 768px) {
+    .icon-button {
+        padding: 12px;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .button-group button {
+        width: 100%;
+        padding: 12px;
+        margin: 5px 0;
+    }
+}
+
+/* Add disabled button styles */
+button:disabled {
+    background: var(--secondary-color);
+    color: var(--text-color);
+    opacity: 0.7;
+    cursor: not-allowed;
 }

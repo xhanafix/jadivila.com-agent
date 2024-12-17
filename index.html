@@ -18,15 +18,23 @@
 
         <div class="setup-section" id="apiSetup">
             <h2>Setup Your AI Agent</h2>
-            <div class="api-input-group">
-                <input type="password" id="apiKey" placeholder="Enter your OpenRouter API Key">
-                <button id="showApiKey" class="icon-button" type="button">👁️</button>
-            </div>
-            <div class="button-group">
-                <button id="saveApiKey" class="primary-button">Save API Key</button>
-                <button onclick="usePresetCredentials()" class="secondary-button">Use JadiVila.com Credentials</button>
-            </div>
-            <div id="apiStatus" class="api-status"></div>
+            <form onsubmit="event.preventDefault(); saveCredentials();">
+                <div class="api-input-group">
+                    <input type="password" 
+                           id="apiKey" 
+                           placeholder="Enter your OpenRouter API Key"
+                           autocomplete="off"
+                           autocapitalize="off"
+                           spellcheck="false"
+                           autocorrect="off">
+                    <button type="button" id="showApiKey" class="icon-button">👁️</button>
+                </div>
+                <div class="button-group">
+                    <button type="submit" id="saveApiKey" class="primary-button" disabled>Save API Key</button>
+                    <button type="button" onclick="usePresetCredentials()" class="secondary-button">Use JadiVila.com Credentials</button>
+                </div>
+                <div id="apiStatus" class="api-status"></div>
+            </form>
         </div>
 
         <div class="chat-section" id="chatSection">

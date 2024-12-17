@@ -26,24 +26,37 @@ function loadTheme() {
 
 // Store credentials in localStorage
 function saveCredentials() {
-    const apiKey = document.getElementById('apiKey').value.trim();
+    const apiKeyInput = document.getElementById('apiKey');
+    const apiKey = apiKeyInput.value.trim();
     
+    // Validate API key
     if (!apiKey) {
         showApiStatus('Please enter an API key', false);
+        apiKeyInput.focus();
         return;
     }
 
-    // Store credentials
-    localStorage.setItem('openRouterApiKey', apiKey);
-    localStorage.setItem('siteUrl', 'https://jadivila.com');
-    localStorage.setItem('siteName', 'jadivila.com');
+    try {
+        // Test localStorage availability
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+        
+        // Store credentials
+        localStorage.setItem('openRouterApiKey', apiKey);
+        localStorage.setItem('siteUrl', 'https://jadivila.com');
+        localStorage.setItem('siteName', 'jadivila.com');
 
-    showApiStatus('API key saved successfully!', true);
-    
-    // Hide setup section after short delay
-    setTimeout(() => {
-        document.getElementById('apiSetup').classList.add('hidden');
-    }, 1500);
+        showApiStatus('API key saved successfully!', true);
+        
+        // Hide setup section after short delay
+        setTimeout(() => {
+            document.getElementById('apiSetup').classList.add('hidden');
+        }, 1500);
+
+    } catch (error) {
+        console.error('Storage error:', error);
+        showApiStatus('Unable to save API key. Please check your browser settings.', false);
+    }
 }
 
 // Load credentials if they exist
@@ -238,6 +251,19 @@ function showApiStatus(message, isSuccess = true) {
     }, 3000);
 }
 
+// Add this function to handle API key input validation
+function handleApiKeyInput(event) {
+    const input = event.target;
+    const value = input.value.trim();
+    
+    // Remove any whitespace or special characters
+    input.value = value.replace(/\s+/g, '');
+    
+    // Enable/disable save button based on input
+    const saveButton = document.getElementById('saveApiKey');
+    saveButton.disabled = !input.value;
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     loadCredentials();
@@ -254,4 +280,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (apiKey) {
         document.getElementById('apiSetup').classList.add('hidden');
     }
+
+    // Add API key input event listeners
+    const apiKeyInput = document.getElementById('apiKey');
+    apiKeyInput.addEventListener('input', handleApiKeyInput);
+    apiKeyInput.addEventListener('paste', (e) => {
+        // Handle paste event
+        e.preventDefault();
+        const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+        apiKeyInput.value = pastedText.trim().replace(/\s+/g, '');
+        handleApiKeyInput({ target: apiKeyInput });
+    });
+
+    // Add form submission handling
+    const setupForm = document.getElementById('apiSetup');
+    setupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveCredentials();
+    });
 }); 
