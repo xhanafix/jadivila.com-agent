@@ -1,67 +1,43 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JadiVila.com Agent</title>
+    <title>Jadivila Investment Assistant</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>JadiVila.com Agent</h1>
-            <button id="themeToggle" class="theme-toggle">
-                <span class="light-icon">☀️</span>
-                <span class="dark-icon">🌙</span>
-            </button>
-        </header>
-
-        <div class="setup-section" id="apiSetup">
-            <h2>Setup Your AI Agent</h2>
-            <form onsubmit="event.preventDefault(); saveCredentials();" autocomplete="off">
-                <div class="api-input-group">
-                    <input type="password" 
-                           id="apiKey" 
-                           placeholder="Enter your OpenRouter API Key"
-                           autocomplete="off"
-                           autocapitalize="off"
-                           spellcheck="false"
-                           autocorrect="off"
-                           enterkeyhint="done">
-                    <button type="button" 
-                            id="showApiKey" 
-                            class="icon-button" 
-                            aria-label="Toggle API key visibility">👁️</button>
-                </div>
-                <div class="button-group">
-                    <button type="submit" 
-                            id="saveApiKey" 
-                            class="primary-button" 
-                            disabled>Save API Key</button>
-                    <button type="button" 
-                            onclick="usePresetCredentials()" 
-                            class="secondary-button">Use JadiVila.com Credentials</button>
-                </div>
-                <div id="apiStatus" class="api-status"></div>
-            </form>
-        </div>
-
-        <div class="chat-section" id="chatSection">
-            <div class="chat-history" id="chatHistory"></div>
-            <div class="input-area">
-                <textarea id="userInput" placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"></textarea>
-                <button id="sendButton" onclick="sendMessage()">
-                    Send
-                    <span id="loadingSpinner" class="loading-spinner" style="display: none;"></span>
-                </button>
+        <div class="language-container" id="languageContainer">
+            <h2>Welcome to Jadivila Investment Assistant</h2>
+            <p>Selamat datang ke Pembantu Pelaburan Jadivila</p>
+            <div class="language-buttons">
+                <button onclick="selectLanguage('en')">English</button>
+                <button onclick="selectLanguage('ms')">Bahasa Malaysia</button>
             </div>
         </div>
 
-        <footer class="footer">
-            <p>Made with <span class="heart">❤️</span> by <a href="https://jadivila.com" target="_blank">JadiVila.com</a></p>
-            <p class="copyright">© 2025 JadiVila.com. All rights reserved.</p>
-        </footer>
+        <div class="setup-container" id="setupContainer" style="display: none;">
+            <h2>Jadivila Investment Assistant Setup</h2>
+            <div class="api-setup">
+                <input type="text" id="apiKeyInput" placeholder="Enter your OpenRouter API Key">
+                <button onclick="saveAPIKey()">Save API Key</button>
+            </div>
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <h2>Jadivila Investment Assistant</h2>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be inserted here -->
+            </div>
+            <div class="chat-input">
+                <textarea id="userInput" placeholder="Ask about our villa investment opportunities..."></textarea>
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
-</html> 
+</html>

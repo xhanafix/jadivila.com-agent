@@ -1,185 +1,182 @@
-// Add these functions at the beginning of the file
+const SITE_URL = "https://jadivila.com";
+const SITE_NAME = "Jadivila Investment Assistant";
 
-// Theme toggle functionality
-function toggleTheme() {
-    const html = document.documentElement;
-    const currentTheme = html.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    html.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
+// Add these constants at the top of the file
+const LOADING_MESSAGES = [
+    "🤔 Analyzing your investment query...",
+    "🔍 Checking Jadivila's project details...",
+    "🏠 Calculating villa investment potential...",
+    "💭 Preparing your personalized response...",
+    "📊 Crunching the investment numbers...",
+    "🌟 Getting the latest Jadivila insights...",
+    "🎯 Tailoring information for you...",
+    "📝 Crafting your detailed response..."
+];
+
+// Add these at the top of your script.js
+let selectedLanguage = null;
+
+const WELCOME_MESSAGES = {
+    en: "Hello! I'm your Jadivila Investment Assistant. I specialize in our 360 sqft turnkey villa investment project. I can help you understand our unique offering, from construction specifications to ROI projections. What would you like to know about investing with Jadivila.com?",
+    ms: "Hai! Saya Pembantu Pelaburan Jadivila. Saya pakar dalam projek pelaburan vila turnkey 360 kaki persegi kami. Saya boleh membantu anda memahami tawaran unik kami, dari spesifikasi pembinaan hingga unjuran ROI. Apa yang ingin anda ketahui tentang pelaburan dengan Jadivila.com?"
+};
+
+const SYSTEM_PROMPTS = {
+    en: `You are Jadivila.com's professional turnkey villa investment consultant...`, // Your existing English prompt
+    ms: `Anda adalah perunding pelaburan vila turnkey profesional Jadivila.com, yang mengkhusus dalam projek vila 360 kaki persegi di Malaysia.
+
+Tanggungjawab utama anda:
+
+1. Spesifikasi Projek Jadivila:
+- Perincikan reka bentuk vila 360 kaki persegi dan pembinaan batu-bata premium kami
+- Jelaskan bahawa pelanggan memerlukan tanah sendiri untuk projek turnkey
+- Tonjolkan manfaat perkhidmatan pembinaan turnkey Jadivila
+
+2. Pemahaman Sasaran Audiens:
+- Penjawat awam (Gred 41)
+- Guru
+- Tentera yang merancang persaraan awal
+- Pemilik perniagaan
+
+3. Butiran Pelaburan:
+- Berikan unjuran ROI yang jelas untuk vila Jadivila
+- Terangkan potensi hasil sewa dalam pasaran semasa
+- Perincikan pelan pembayaran dan pilihan pembiayaan Jadivila
+- Bincangkan keperluan tanah minimum untuk reka bentuk 360 kaki persegi kami
+
+Sentiasa format respons dengan:
+- Tajuk yang jelas (menggunakan #)
+- Poin bullet (menggunakan -)
+- Perenggan yang teratur
+- Contoh yang relevan
+
+Ingat untuk menekankan pendekatan turnkey unik Jadivila.com sambil mengekalkan penjelasan yang mudah difahami untuk bukan profesional hartanah.`
+};
+
+// Add this new function
+function selectLanguage(lang) {
+    selectedLanguage = lang;
+    document.getElementById('languageContainer').style.display = 'none';
+    document.getElementById('setupContainer').style.display = 'block';
 }
 
-// Use preset credentials
-function usePresetCredentials() {
-    document.getElementById('apiKey').value = 'YOUR_API_KEY';
-    document.getElementById('siteUrl').value = 'https://jadivila.com';
-    document.getElementById('siteName').value = 'jadivila.com';
-    saveCredentials();
-}
-
-// Load theme preference
-function loadTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-}
-
-// Store credentials in localStorage
-function saveCredentials() {
-    const apiKeyInput = document.getElementById('apiKey');
-    const apiKey = apiKeyInput.value.trim();
-    
-    // Validate API key
-    if (!apiKey) {
-        showApiStatus('Please enter an API key', false);
-        apiKeyInput.focus();
-        return;
-    }
-
-    try {
-        // Test localStorage availability
-        localStorage.setItem('test', 'test');
-        localStorage.removeItem('test');
-        
-        // Store credentials
-        localStorage.setItem('openRouterApiKey', apiKey);
-        localStorage.setItem('siteUrl', 'https://jadivila.com');
-        localStorage.setItem('siteName', 'jadivila.com');
-
-        showApiStatus('API key saved successfully!', true);
-        
-        // Hide setup section after short delay
-        setTimeout(() => {
-            document.getElementById('apiSetup').classList.add('hidden');
-        }, 1500);
-
-    } catch (error) {
-        console.error('Storage error:', error);
-        showApiStatus('Unable to save API key. Please check your browser settings.', false);
-    }
-}
-
-// Load credentials if they exist
-function loadCredentials() {
+// Check if API key exists in localStorage
+function checkAPIKey() {
     const apiKey = localStorage.getItem('openRouterApiKey');
-    const siteUrl = localStorage.getItem('siteUrl');
-    const siteName = localStorage.getItem('siteName');
-
-    if (apiKey) document.getElementById('apiKey').value = apiKey;
-    if (siteUrl) document.getElementById('siteUrl').value = siteUrl;
-    if (siteName) document.getElementById('siteName').value = siteName;
+    if (apiKey) {
+        document.getElementById('setupContainer').style.display = 'none';
+        document.getElementById('chatContainer').style.display = 'block';
+        // Add welcome message in selected language
+        addMessage(WELCOME_MESSAGES[selectedLanguage], 'assistant');
+    }
 }
 
-// Add message to chat history
-function addMessage(content, isUser = false) {
-    const chatHistory = document.getElementById('chatHistory');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
-    
-    if (isUser) {
-        messageDiv.textContent = content;
+// Save API key to localStorage
+function saveAPIKey() {
+    const apiKey = document.getElementById('apiKeyInput').value.trim();
+    if (apiKey) {
+        localStorage.setItem('openRouterApiKey', apiKey);
+        checkAPIKey();
     } else {
-        // Format AI response with basic markdown-style formatting
-        let formattedContent = content
-            .replace(/\n\n/g, '<br><br>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/^# (.*$)/gm, '<h1>$1</h1>')
-            .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-            .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-            .replace(/`(.*?)`/g, '<code>$1</code>')
-            .replace(/^\- (.*$)/gm, '• $1<br>');
-        
-        messageDiv.innerHTML = formattedContent;
+        alert('Please enter a valid API key');
+    }
+}
+
+// Add message to chat
+function addMessage(message, role) {
+    const chatMessages = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${role}-message`;
+    
+    // Format the message if it's from the assistant
+    if (role === 'assistant') {
+        messageDiv.innerHTML = formatMessage(message);
+    } else {
+        messageDiv.textContent = message;
     }
     
-    chatHistory.appendChild(messageDiv);
-    chatHistory.scrollTop = chatHistory.scrollHeight;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Send message to AI
+// Add this new function to format the message
+function formatMessage(message) {
+    // Split by new lines and process each paragraph
+    const paragraphs = message.split('\n').filter(p => p.trim());
+    let formattedText = '';
+    
+    paragraphs.forEach(paragraph => {
+        // Check if it's a heading (starts with #)
+        if (paragraph.startsWith('#')) {
+            formattedText += `<h3>${paragraph.replace('#', '').trim()}</h3>`;
+        }
+        // Check if it's a list (starts with - or *)
+        else if (paragraph.trim().startsWith('-') || paragraph.trim().startsWith('*')) {
+            const items = paragraph.split(/[\-\*]/).filter(item => item.trim());
+            formattedText += '<ul>' + items.map(item => `<li>${item.trim()}</li>`).join('') + '</ul>';
+        }
+        // Regular paragraph
+        else {
+            formattedText += `<p>${paragraph}</p>`;
+        }
+    });
+    
+    return formattedText;
+}
+
+// Add this new function to show loading animation
+function showLoading() {
+    const chatMessages = document.getElementById('chatMessages');
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'loading-message';
+    loadingDiv.id = 'loadingMessage';
+    
+    const randomMessage = LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)];
+    
+    loadingDiv.innerHTML = `
+        <span class="loading-text">${randomMessage}</span>
+        <div class="loading-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    `;
+    
+    chatMessages.appendChild(loadingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Add this function to remove loading animation
+function removeLoading() {
+    const loadingMessage = document.getElementById('loadingMessage');
+    if (loadingMessage) {
+        loadingMessage.remove();
+    }
+}
+
+// Send message to API
 async function sendMessage() {
     const userInput = document.getElementById('userInput');
-    const sendButton = document.getElementById('sendButton');
-    const loadingSpinner = document.getElementById('loadingSpinner');
     const message = userInput.value.trim();
     
     if (!message) return;
 
-    // Disable input and show loading state
-    sendButton.disabled = true;
-    userInput.disabled = true;
-    loadingSpinner.style.display = 'inline-block';
-
     // Add user message to chat
-    addMessage(message, true);
+    addMessage(message, 'user');
     userInput.value = '';
+    
+    // Show loading animation
+    showLoading();
 
     const apiKey = localStorage.getItem('openRouterApiKey');
-    const siteUrl = localStorage.getItem('siteUrl');
-    const siteName = localStorage.getItem('siteName');
-
-    if (!apiKey) {
-        alert('Please set up your API credentials first!');
-        resetInputState();
-        return;
-    }
-
-    // Enhanced marketing prompt with better structure
-    const marketingPrompt = `You are the AI sales agent for JadiVila.com, specializing in villa investments in Malaysia. Your responses should be well-structured, professional, and tailored to the Malaysian market.
-
-PROJECT DETAILS:
-- Premium villas built using conventional brick and mortar construction
-- Built on empty land with proper development approvals
-- Designed for passive income generation
-
-TARGET AUDIENCE:
-- Malaysian government servants (Grade 41)
-- Teachers
-- Soldiers planning for early retirement
-- Business owners seeking investment opportunities
-
-KEY FOCUS AREAS:
-1. Investment Benefits:
-   - Affordable investment structure
-   - Steady rental income potential
-   - Long-term ROI projections
-   - Early retirement planning potential
-
-2. Market Understanding:
-   - Malaysian property investment landscape
-   - Local market trends
-   - Security and stability factors
-   - Financial freedom aspirations
-
-3. Sales Approach:
-   - Educational content delivery
-   - Objection handling
-   - Trust building
-   - Investment security assurance
-
-Please respond to the following query in a structured, easy-to-read format using markdown:
-# for main headings
-## for subheadings
-** for bold text
-* for italic text
-- for bullet points
-
-User Query: ${message}
-
-Format your response to include:
-1. Direct answer to the query
-2. Relevant benefits for the target audience
-3. Supporting data or examples
-4. Clear call-to-action or next steps`;
-
+    
     try {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${apiKey}`,
-                "HTTP-Referer": siteUrl,
-                "X-Title": siteName,
+                "HTTP-Referer": SITE_URL,
+                "X-Title": SITE_NAME,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -187,135 +184,36 @@ Format your response to include:
                 "messages": [
                     {
                         "role": "system",
-                        "content": "You are a professional marketing and sales agent for JadiVila.com, specializing in premium villa investments in Malaysia. Your responses should be clear, structured, and focused on building trust and providing value."
+                        "content": SYSTEM_PROMPTS[selectedLanguage]
                     },
                     {
                         "role": "user",
-                        "content": marketingPrompt
+                        "content": message
                     }
                 ]
             })
         });
 
         const data = await response.json();
+        // Remove loading animation
+        removeLoading();
         const aiResponse = data.choices[0].message.content;
-        addMessage(aiResponse);
+        addMessage(aiResponse, 'assistant');
     } catch (error) {
+        removeLoading();
+        addMessage("Sorry, I encountered an error. Please try again.", 'assistant');
         console.error('Error:', error);
-        addMessage('Sorry, there was an error processing your request. Please try again.');
-    } finally {
-        resetInputState();
     }
 }
 
-function resetInputState() {
-    const sendButton = document.getElementById('sendButton');
-    const userInput = document.getElementById('userInput');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    
-    sendButton.disabled = false;
-    userInput.disabled = false;
-    loadingSpinner.style.display = 'none';
-}
-
-// Add this function to handle keyboard events
-function handleKeyPress(event) {
-    if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault(); // Prevent default enter behavior
+// Handle Enter key in textarea
+document.getElementById('userInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
         sendMessage();
     }
-}
+});
 
-// Add these new functions
-function toggleApiKeyVisibility() {
-    const apiKeyInput = document.getElementById('apiKey');
-    const showButton = document.getElementById('showApiKey');
-    
-    if (apiKeyInput.type === 'password') {
-        apiKeyInput.type = 'text';
-        showButton.textContent = '🔒';
-    } else {
-        apiKeyInput.type = 'password';
-        showButton.textContent = '👁️';
-    }
-}
-
-function showApiStatus(message, isSuccess = true) {
-    const statusDiv = document.getElementById('apiStatus');
-    statusDiv.textContent = message;
-    statusDiv.className = `api-status ${isSuccess ? 'success' : 'error'}`;
-    
-    // Hide status after 3 seconds
-    setTimeout(() => {
-        statusDiv.style.display = 'none';
-    }, 3000);
-}
-
-// Add this function to handle API key input validation
-function handleApiKeyInput(event) {
-    const input = event.target;
-    const value = input.value.trim();
-    
-    // Remove any whitespace or special characters
-    input.value = value.replace(/\s+/g, '');
-    
-    // Enable/disable save button based on input
-    const saveButton = document.getElementById('saveApiKey');
-    saveButton.disabled = !input.value;
-    
-    // Handle mobile keyboard "done" button
-    if (event.inputType === 'insertLineBreak' || 
-        (event.key === 'Enter' && !event.shiftKey)) {
-        event.preventDefault();
-        if (input.value) {
-            saveCredentials();
-        }
-    }
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    loadCredentials();
-    loadTheme();
-    
-    // Add event listeners
-    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-    document.getElementById('userInput').addEventListener('keydown', handleKeyPress);
-    document.getElementById('showApiKey').addEventListener('click', toggleApiKeyVisibility);
-    document.getElementById('saveApiKey').addEventListener('click', saveCredentials);
-    
-    // Show/hide setup section based on stored API key
-    const apiKey = localStorage.getItem('openRouterApiKey');
-    if (apiKey) {
-        document.getElementById('apiSetup').classList.add('hidden');
-    }
-
-    // Add API key input event listeners
-    const apiKeyInput = document.getElementById('apiKey');
-    apiKeyInput.addEventListener('input', handleApiKeyInput);
-    apiKeyInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            if (apiKeyInput.value.trim()) {
-                saveCredentials();
-            }
-        }
-    });
-    
-    // Handle mobile keyboard events
-    apiKeyInput.addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            if (apiKeyInput.value.trim()) {
-                saveCredentials();
-            }
-        }
-    });
-
-    // Add form submission handling
-    const setupForm = document.getElementById('apiSetup');
-    setupForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        saveCredentials();
-    });
-}); 
+// Initialize the chat
+document.getElementById('setupContainer').style.display = 'none';
+document.getElementById('chatContainer').style.display = 'none';
