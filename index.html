@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JadiVila.com Agent</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>JadiVila.com Agent</h1>
+            <button id="themeToggle" class="theme-toggle">
+                <span class="light-icon">☀️</span>
+                <span class="dark-icon">🌙</span>
+            </button>
+        </header>
+
+        <div class="setup-section" id="apiSetup">
+            <h2>Setup Your AI Agent</h2>
+            <div class="api-input-group">
+                <input type="password" id="apiKey" placeholder="Enter your OpenRouter API Key">
+                <button id="showApiKey" class="icon-button" type="button">👁️</button>
+            </div>
+            <div class="button-group">
+                <button id="saveApiKey" class="primary-button">Save API Key</button>
+                <button onclick="usePresetCredentials()" class="secondary-button">Use JadiVila.com Credentials</button>
+            </div>
+            <div id="apiStatus" class="api-status"></div>
+        </div>
+
+        <div class="chat-section" id="chatSection">
+            <div class="chat-history" id="chatHistory"></div>
+            <div class="input-area">
+                <textarea id="userInput" placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"></textarea>
+                <button id="sendButton" onclick="sendMessage()">
+                    Send
+                    <span id="loadingSpinner" class="loading-spinner" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Made with <span class="heart">❤️</span> by <a href="https://jadivila.com" target="_blank">JadiVila.com</a></p>
+            <p class="copyright">© 2025 JadiVila.com. All rights reserved.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
